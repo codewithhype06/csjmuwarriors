@@ -3,13 +3,19 @@ const attendanceService = require('../services/attendanceService');
 
 const checkIn = async (req, res) => {
     try {
-        // MAGIC: We don't ask for the user's ID in the body. 
-        // Our 'protect' middleware already attached it securely from the JWT!
-        const attendance = await attendanceService.markCheckIn(req.user.id);
+        // MAGIC: User ID aayegi token se, baaki data aayega Android app se!
+        const { latitude, longitude, selfieImage } = req.body;
+
+        const attendance = await attendanceService.markCheckIn(
+            req.user.id, 
+            latitude, 
+            longitude, 
+            selfieImage
+        );
         
         res.status(200).json({
             success: true,
-            message: "Checked in successfully!",
+            message: "Checked in successfully with location & selfie!",
             data: attendance
         });
     } catch (error) {
