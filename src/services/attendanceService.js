@@ -1,5 +1,5 @@
 // File: src/services/attendanceService.js
-const Attendance = require('../models/Attendance');
+const Attendance = require('../models/AttendanceModel');
 
 const markCheckIn = async (userId, latitude, longitude, selfieImage) => {
     // Check if already checked in today
