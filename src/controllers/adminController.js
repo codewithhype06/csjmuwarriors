@@ -1,7 +1,8 @@
 // File: src/controllers/adminController.js
 const Employee = require('../models/EmployeeModel');
 const Leave = require('../models/LeaveModel');
-const Zone = require('../models/ZoneModel'); // FIX: Updated to ZoneModel to bypass Git cache
+const Zone = require('../models/ZoneModel'); 
+const Assignment = require('../models/AssignmentModel'); // NEW: Import Assignment Model
 
 // --- 1. Get all employees waiting for approval ---
 const getPendingEmployees = async (req, res) => {
@@ -70,7 +71,7 @@ const updateLeaveStatus = async (req, res) => {
     }
 };
 
-// --- 5. NEW: Get All Zones ---
+// --- 5. Get All Zones ---
 const getAllZones = async (req, res) => {
     try {
         const zones = await Zone.find();
@@ -80,7 +81,7 @@ const getAllZones = async (req, res) => {
     }
 };
 
-// --- 6. NEW: Create a Zone (For Manager/Admin) ---
+// --- 6. Create a Zone ---
 const createZone = async (req, res) => {
     try {
         const { zoneName, description, subzones } = req.body;
@@ -92,11 +93,41 @@ const createZone = async (req, res) => {
     }
 };
 
+// --- 7. NEW: Create Assignment ---
+const createAssignment = async (req, res) => {
+    try {
+        const { bvgId, subzoneId, shift, durationDays } = req.body;
+
+        // Step 1: Validate Employee exists
+        const employee = await Employee.findOne({ bvgId: bvgId });
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Worker with this BVG ID not found." });
+        }
+
+        // Step 2: Create the assignment
+        const newAssignment = new Assignment({
+            employee: employee._id,
+            bvgId,
+            subzoneId,
+            shift,
+            durationDays: parseInt(durationDays) || 30,
+            assignedBy: req.user.id // Extracted from JWT token via protect middleware
+        });
+
+        await newAssignment.save();
+
+        res.status(201).json({ success: true, message: "Assignment created successfully!", data: newAssignment });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = { 
     getPendingEmployees, 
     approveEmployee, 
     getPendingLeaves, 
     updateLeaveStatus,
     getAllZones,
-    createZone
+    createZone,
+    createAssignment // Exported new function
 };
