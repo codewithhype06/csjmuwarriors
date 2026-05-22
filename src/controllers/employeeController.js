@@ -38,4 +38,42 @@ const getProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerEmployee, loginEmployee, getProfile };
+// --- NEW: Fetch all pending approvals ---
+const getPendingApprovals = async (req, res) => {
+    try {
+        // Fetch users where isApproved is strictly false
+        const pendingUsers = await employeeService.Employee.find({ isApproved: false }).select('-password');
+        
+        sendResponse(res, 200, true, "Pending approvals fetched successfully", pendingUsers);
+    } catch (error) {
+        sendResponse(res, 500, false, error.message);
+    }
+};
+
+// --- NEW: Approve an employee ---
+const approveEmployee = async (req, res) => {
+    try {
+        const employeeId = req.params.id;
+        const employee = await employeeService.Employee.findByIdAndUpdate(
+            employeeId,
+            { isApproved: true },
+            { new: true } // Returns the updated document
+        ).select('-password');
+
+        if (!employee) {
+            return sendResponse(res, 404, false, "Employee not found");
+        }
+
+        sendResponse(res, 200, true, "Employee approved successfully", employee);
+    } catch (error) {
+        sendResponse(res, 500, false, error.message);
+    }
+};
+
+module.exports = { 
+    registerEmployee, 
+    loginEmployee, 
+    getProfile, 
+    getPendingApprovals, 
+    approveEmployee 
+};

@@ -11,4 +11,10 @@ router.post('/register', validate(registerSchema), employeeController.registerEm
 router.post('/login', validate(loginSchema), employeeController.loginEmployee);
 router.get('/profile', protect, employeeController.getProfile);
 
+// --- NEW ROUTES FOR ADMIN APPROVALS ---
+// Note: Abhi ke liye ye direct khule hain taaki Android app test ho sake. 
+// Baad mein hum inke aage 'protect' laga denge security ke liye.
+router.get('/pending', employeeController.getPendingApprovals);
+router.put('/approve/:id', employeeController.approveEmployee);
+
 module.exports = router;
