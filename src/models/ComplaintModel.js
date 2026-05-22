@@ -7,7 +7,11 @@ const complaintSchema = new mongoose.Schema({
         ref: 'Employee', 
         required: true 
     },
-    subject: { 
+    subzoneId: { 
+        type: String, 
+        required: true 
+    },
+    category: { 
         type: String, 
         required: true 
     },
@@ -17,8 +21,8 @@ const complaintSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['OPEN', 'IN_PROGRESS', 'RESOLVED'],
-        default: 'OPEN' // Every new ticket starts as OPEN
+        enum: ['PENDING', 'RESOLVED'], // Simplified to match UI logic
+        default: 'PENDING' 
     }
 }, { timestamps: true });
 
