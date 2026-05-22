@@ -1,50 +1,45 @@
 // File: src/services/attendanceService.js
 const Attendance = require('../models/AttendanceModel');
 
-const markCheckIn = async (userId, latitude, longitude, selfieImage) => {
-    // Check if already checked in today
-    const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
-    const existingAttendance = await Attendance.findOne({
-        employee: userId,
-        date: today
-    });
+const markCheckIn = async (employeeId, latitude, longitude, selfieImage) => {
+    // Get current date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
 
+    // Check if the user has already checked in today
+    const existingAttendance = await Attendance.findOne({ employee: employeeId, date: today });
     if (existingAttendance) {
-        throw new Error("You have already checked in today.");
+        throw new Error("You have already checked in today!");
     }
 
-    const newAttendance = await Attendance.create({
-        employee: userId,
+    // Create new attendance record
+    const newAttendance = new Attendance({
+        employee: employeeId,
         date: today,
-        checkInTime: new Date().toLocaleTimeString(),
-        location: {
-            latitude: latitude || 0,
-            longitude: longitude || 0
-        },
-        selfieImage: selfieImage || "No Selfie Provided"
+        checkInTime: new Date(),
+        checkInLocation: { latitude, longitude },
+        selfieImage
     });
 
+    await newAttendance.save();
     return newAttendance;
 };
 
-const markCheckOut = async (userId) => {
+const markCheckOut = async (employeeId) => {
     const today = new Date().toISOString().split('T')[0];
-    const attendance = await Attendance.findOne({
-        employee: userId,
-        date: today
-    });
 
+    // Find today's check-in
+    const attendance = await Attendance.findOne({ employee: employeeId, date: today });
+    
     if (!attendance) {
-        throw new Error("No check-in found for today.");
+        throw new Error("No check-in record found for today. Please check in first.");
     }
-
     if (attendance.checkOutTime) {
-        throw new Error("You have already checked out today.");
+        throw new Error("You have already checked out today!");
     }
 
-    attendance.checkOutTime = new Date().toLocaleTimeString();
+    // Update with check-out time
+    attendance.checkOutTime = new Date();
     await attendance.save();
-
     return attendance;
 };
 
