@@ -1,7 +1,7 @@
 // File: src/controllers/adminController.js
 const Employee = require('../models/EmployeeModel');
 const Leave = require('../models/LeaveModel');
-const Zone = require('../models/Zone'); // NEW: Imported Zone Model
+const Zone = require('../models/ZoneModel'); // FIX: Updated to ZoneModel to bypass Git cache
 
 // --- 1. Get all employees waiting for approval ---
 const getPendingEmployees = async (req, res) => {
@@ -73,7 +73,6 @@ const updateLeaveStatus = async (req, res) => {
 // --- 5. NEW: Get All Zones ---
 const getAllZones = async (req, res) => {
     try {
-        // Fetches all zones dynamically. Will return empty array [] initially.
         const zones = await Zone.find();
         res.status(200).json({ success: true, data: zones });
     } catch (error) {
