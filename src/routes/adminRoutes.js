@@ -3,20 +3,24 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 
-// Import both bouncers!
-const { protect } = require('../middlewares/authMiddleware');
-const { adminOnly } = require('../middlewares/adminMiddleware');
+// Agar tumhara authMiddleware export 'protect' use karta hai, toh use yahan import kiya hai
+const { protect } = require('../middlewares/authMiddleware'); 
 
-// 🔒 All routes below this line will automatically require BOTH middlewares!
-router.use(protect);
-router.use(adminOnly);
+// ==========================================
+// EXISTING ROUTES: Approvals & Leaves
+// ==========================================
+router.get('/pending-employees', adminController.getPendingEmployees);
+router.put('/approve-employee/:id', adminController.approveEmployee);
+router.get('/pending-leaves', adminController.getPendingLeaves);
+router.put('/update-leave/:id', adminController.updateLeaveStatus);
 
-// Employee Approval Routes
-router.get('/employees/pending', adminController.getPendingEmployees);
-router.put('/employees/approve/:id', adminController.approveEmployee); // :id is a dynamic variable!
+// ==========================================
+// NEW ROUTES: Dynamic Zone Management
+// ==========================================
+// GET /api/v1/admin/zones -> Android app yahan se list fetch karegi
+router.get('/zones', protect, adminController.getAllZones);
 
-// Leave Approval Routes
-router.get('/leaves/pending', adminController.getPendingLeaves);
-router.put('/leaves/update/:id', adminController.updateLeaveStatus);
+// POST /api/v1/admin/zones -> Manager/Admin yahan se naye zones add karenge
+router.post('/zones', protect, adminController.createZone);
 
 module.exports = router;
