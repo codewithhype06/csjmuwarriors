@@ -7,6 +7,10 @@ const leaveSchema = new mongoose.Schema({
         ref: 'Employee', 
         required: true 
     },
+    leaveType: { // NEW: Added to match Android UI
+        type: String,
+        required: true
+    },
     startDate: { 
         type: Date, 
         required: true 
@@ -22,7 +26,7 @@ const leaveSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['PENDING', 'APPROVED', 'REJECTED'],
-        default: 'PENDING' // Every new leave request starts as Pending
+        default: 'PENDING' 
     }
 }, { timestamps: true });
 
