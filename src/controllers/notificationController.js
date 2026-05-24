@@ -23,4 +23,18 @@ const syncFcmToken = async (req, res) => {
     }
 };
 
+const testPushNotification = async (req, res) => {
+    try {
+        // Hum khud ko hi (logged-in user ko) notification bhej rahe hain test ke liye
+        await notificationService.sendPushNotification(
+            req.user.id,
+            "🚀 CSJMU Warriors LIVE!",
+            "Bhai! Tumhara Push Notification system ekdum perfect kaam kar raha hai!"
+        );
+        res.status(200).json({ success: true, message: "Test notification sent!" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = { getMyNotifications, syncFcmToken };
