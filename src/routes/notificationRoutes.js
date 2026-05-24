@@ -10,3 +10,4 @@ router.post('/sync-token', protect, notificationController.syncFcmToken);
 router.post('/test-push', protect, notificationController.testPushNotification);
 
 module.exports = router;
+module.exports = { getMyNotifications, syncFcmToken, testPushNotification };
