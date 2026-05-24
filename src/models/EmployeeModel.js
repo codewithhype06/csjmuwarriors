@@ -17,7 +17,8 @@ const employeeSchema = new mongoose.Schema({
         default: 15000 // Default automated salary, can be changed when hiring
     },
     // SECURITY GATE: Every new user defaults to false until an Admin approves them
-    isApproved: { type: Boolean, default: false } 
+    isApproved: { type: Boolean, default: false }, // 👇 YAHAN COMMA (,) ADD KAR DIYA HAI
+    
     fcmToken: { type: String, default: "" }
 }, { timestamps: true });
 
