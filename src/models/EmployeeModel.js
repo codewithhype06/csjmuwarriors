@@ -18,6 +18,7 @@ const employeeSchema = new mongoose.Schema({
     },
     // SECURITY GATE: Every new user defaults to false until an Admin approves them
     isApproved: { type: Boolean, default: false } 
+    fcmToken: { type: String, default: "" }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Employee', employeeSchema);
