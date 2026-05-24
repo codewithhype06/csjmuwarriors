@@ -28,6 +28,7 @@ app.use('/api/v1/leaves', leaveRoutes);
 app.use('/api/v1/admin', adminRoutes); 
 app.use('/api/v1/payroll', payrollRoutes); 
 app.use('/api/v1/complaints', complaintRoutes); // <-- Added Complaint URL
+app.use('/api/v1/notifications', require('./routes/notificationRoutes'));
 
 // Test Route
 app.get('/', (req, res) => {
