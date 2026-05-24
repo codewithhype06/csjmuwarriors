@@ -6,8 +6,6 @@ const { protect } = require('../middlewares/authMiddleware');
 
 router.get('/my-alerts', protect, notificationController.getMyNotifications);
 router.post('/sync-token', protect, notificationController.syncFcmToken);
-
 router.post('/test-push', protect, notificationController.testPushNotification);
 
 module.exports = router;
-module.exports = { getMyNotifications, syncFcmToken, testPushNotification };
