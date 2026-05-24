@@ -1,5 +1,5 @@
 // File: src/controllers/notificationController.js
-const notificationService = require('../services/notificationservice');
+const notificationService = require('../services/notificationService'); // <-- FIXED: Capital 'S'
 const Employee = require('../models/EmployeeModel');
 
 // 1. Fetch all alerts for the logged-in user

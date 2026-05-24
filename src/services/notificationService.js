@@ -1,8 +1,7 @@
-// File: src/services/notificationService.js
+// File: src/services/notificationservice.js
 const admin = require('../config/firebase');
 
-// 👇 EXACT MATCH WITH YOUR FILE NAMES
-const Notification = require('../models/NotificationModel');
+const Notification = require('../models/NotificationModel'); // <-- FIXED: Exact CamelCase
 const Employee = require('../models/EmployeeModel');
 
 const sendPushNotification = async (employeeId, title, message) => {
