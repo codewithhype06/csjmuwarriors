@@ -2,7 +2,9 @@
 const Employee = require('../models/EmployeeModel');
 const Leave = require('../models/LeaveModel');
 const Zone = require('../models/ZoneModel'); 
-const Assignment = require('../models/AssignmentModel'); // NEW: Import Assignment Model
+const Assignment = require('../models/AssignmentModel'); 
+// 👇 NAYA IMPORT: Notification Service ko bulao
+const notificationService = require('../services/notificationService');
 
 // --- 1. Get all employees waiting for approval ---
 const getPendingEmployees = async (req, res) => {
@@ -27,6 +29,13 @@ const approveEmployee = async (req, res) => {
         if (!employee) {
             return res.status(404).json({ success: false, message: "Employee not found." });
         }
+
+        // 👇 AUTOMATION: Send Push Notification to Worker
+        await notificationService.sendPushNotification(
+            employee._id,
+            "🎉 Account Approved!",
+            `Welcome to CSJMU Warriors, ${employee.name}. You can now start marking attendance and applying for leaves.`
+        );
 
         res.status(200).json({ success: true, message: "Employee approved!", data: employee });
     } catch (error) {
@@ -64,6 +73,14 @@ const updateLeaveStatus = async (req, res) => {
         if (!leave) {
             return res.status(404).json({ success: false, message: "Leave request not found." });
         }
+
+        // 👇 AUTOMATION: Send Push Notification based on Status
+        const title = status === 'APPROVED' ? '✅ Leave Approved!' : '❌ Leave Rejected';
+        const message = status === 'APPROVED' 
+            ? `Your leave request from ${new Date(leave.startDate).toLocaleDateString()} to ${new Date(leave.endDate).toLocaleDateString()} has been approved.`
+            : `Your leave request from ${new Date(leave.startDate).toLocaleDateString()} has been rejected by the admin.`;
+
+        await notificationService.sendPushNotification(leave.employee._id, title, message);
 
         res.status(200).json({ success: true, message: `Leave ${status.toLowerCase()} successfully!`, data: leave });
     } catch (error) {
@@ -116,6 +133,13 @@ const createAssignment = async (req, res) => {
 
         await newAssignment.save();
 
+        // 👇 AUTOMATION: Notify worker about new shift/duty
+        await notificationService.sendPushNotification(
+            employee._id,
+            "🏢 New Duty Assigned!",
+            `You have been assigned to a new zone for the ${shift} shift. Please check your app for details.`
+        );
+
         res.status(201).json({ success: true, message: "Assignment created successfully!", data: newAssignment });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -129,5 +153,5 @@ module.exports = {
     updateLeaveStatus,
     getAllZones,
     createZone,
-    createAssignment // Exported new function
+    createAssignment
 };
