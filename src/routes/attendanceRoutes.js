@@ -6,10 +6,10 @@ const { protect } = require('../middlewares/authMiddleware');
 const validate = require('../middlewares/validateMiddleware');
 const { attendanceSchema } = require('../validations/attendanceValidation');
 
-// Check-In requires location and selfie validation
-router.post('/check-in', protect, validate(attendanceSchema), attendanceController.checkIn);
+// NAYA ROUTE: Check status before showing the screen
+router.get('/status', protect, attendanceController.getTodayStatus);
 
-// Check-Out only requires the user token (protect), NO body validation needed
+router.post('/check-in', protect, validate(attendanceSchema), attendanceController.checkIn);
 router.post('/check-out', protect, attendanceController.checkOut);
 
 module.exports = router;
