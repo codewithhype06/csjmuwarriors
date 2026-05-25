@@ -38,25 +38,48 @@ const checkOut = async (req, res) => {
     }
 };
 
-// 👇 THE FIX: API to check today's status
+// File: src/controllers/attendanceController.js (Sirf getTodayStatus wala hissa update karna hai)
+
 const getTodayStatus = async (req, res) => {
     try {
         const today = new Date().toISOString().split('T')[0];
-        const attendance = await Attendance.findOne({ employee: req.user.id, date: today });
+        // .populate() lagaya taaki Employee model se Name aur BVG ID mil jaye
+        const attendance = await Attendance.findOne({ employee: req.user.id, date: today })
+                                         .populate('employee', 'name bvgId');
         
         if (!attendance) {
             return res.status(200).json({ success: true, data: { status: 'NOT_CHECKED_IN' } });
         }
 
+        const empName = attendance.employee?.name || "Warrior";
+        const empBvgId = attendance.employee?.bvgId || "STAFF";
+
         if (attendance.checkOutTime) {
-             return res.status(200).json({ success: true, data: { status: 'CHECKED_OUT' } });
+             return res.status(200).json({ 
+                 success: true, 
+                 data: { 
+                     status: 'CHECKED_OUT', 
+                     checkInTime: attendance.checkInTime, 
+                     checkOutTime: attendance.checkOutTime,
+                     name: empName,
+                     bvgId: empBvgId,
+                     date: attendance.date
+                 } 
+             });
         }
 
-        return res.status(200).json({ success: true, data: { status: 'CHECKED_IN' } });
+        return res.status(200).json({ 
+            success: true, 
+            data: { 
+                status: 'CHECKED_IN', 
+                checkInTime: attendance.checkInTime,
+                name: empName,
+                bvgId: empBvgId,
+                date: attendance.date
+            } 
+        });
 
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-
-module.exports = { checkIn, checkOut, getTodayStatus };
