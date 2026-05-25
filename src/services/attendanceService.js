@@ -1,23 +1,19 @@
-// File: src/services/attendanceService.js
 const Attendance = require('../models/AttendanceModel');
 
-const markCheckIn = async (employeeId, latitude, longitude, selfieImage) => {
-    // Get current date in YYYY-MM-DD format
+const markCheckIn = async (employeeId, latitude, longitude) => {
     const today = new Date().toISOString().split('T')[0];
 
-    // Check if the user has already checked in today
     const existingAttendance = await Attendance.findOne({ employee: employeeId, date: today });
     if (existingAttendance) {
         throw new Error("You have already checked in today!");
     }
 
-    // Create new attendance record
     const newAttendance = new Attendance({
         employee: employeeId,
         date: today,
         checkInTime: new Date(),
-        checkInLocation: { latitude, longitude },
-        selfieImage
+        checkInLocation: { latitude, longitude }
+        // selfieImage field completely removed!
     });
 
     await newAttendance.save();
@@ -26,18 +22,11 @@ const markCheckIn = async (employeeId, latitude, longitude, selfieImage) => {
 
 const markCheckOut = async (employeeId) => {
     const today = new Date().toISOString().split('T')[0];
-
-    // Find today's check-in
     const attendance = await Attendance.findOne({ employee: employeeId, date: today });
     
-    if (!attendance) {
-        throw new Error("No check-in record found for today. Please check in first.");
-    }
-    if (attendance.checkOutTime) {
-        throw new Error("You have already checked out today!");
-    }
+    if (!attendance) throw new Error("No check-in record found for today.");
+    if (attendance.checkOutTime) throw new Error("You have already checked out today!");
 
-    // Update with check-out time
     attendance.checkOutTime = new Date();
     await attendance.save();
     return attendance;

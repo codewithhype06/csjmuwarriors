@@ -1,21 +1,19 @@
-// File: src/controllers/attendanceController.js
 const attendanceService = require('../services/attendanceService');
 const Attendance = require('../models/AttendanceModel');
 
 const checkIn = async (req, res) => {
     try {
-        const { latitude, longitude, selfieImage } = req.body;
+        const { latitude, longitude } = req.body;
 
         const attendance = await attendanceService.markCheckIn(
             req.user.id, 
             latitude, 
-            longitude, 
-            selfieImage
+            longitude
         );
         
         res.status(200).json({
             success: true,
-            message: "Checked in successfully with location & selfie!",
+            message: "Verified and Checked in successfully!",
             data: attendance
         });
     } catch (error) {
@@ -26,7 +24,6 @@ const checkIn = async (req, res) => {
 const checkOut = async (req, res) => {
     try {
         const attendance = await attendanceService.markCheckOut(req.user.id);
-        
         res.status(200).json({
             success: true,
             message: "Checked out successfully!",
@@ -40,7 +37,6 @@ const checkOut = async (req, res) => {
 const getTodayStatus = async (req, res) => {
     try {
         const today = new Date().toISOString().split('T')[0];
-        // .populate() lagaya taaki Employee model se Name aur BVG ID mil jaye
         const attendance = await Attendance.findOne({ employee: req.user.id, date: today })
                                          .populate('employee', 'name bvgId');
         
@@ -81,5 +77,4 @@ const getTodayStatus = async (req, res) => {
     }
 };
 
-// 👇 YAHAN PAR getTodayStatus ADD KIYA HAI TAAKI CRASH NA HO
 module.exports = { checkIn, checkOut, getTodayStatus };
