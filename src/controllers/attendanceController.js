@@ -1,6 +1,5 @@
 // File: src/controllers/attendanceController.js
 const attendanceService = require('../services/attendanceService');
-// 👇 Added Attendance Model here to check status
 const Attendance = require('../models/AttendanceModel');
 
 const checkIn = async (req, res) => {
@@ -37,8 +36,6 @@ const checkOut = async (req, res) => {
         res.status(400).json({ success: false, message: error.message });
     }
 };
-
-// File: src/controllers/attendanceController.js (Sirf getTodayStatus wala hissa update karna hai)
 
 const getTodayStatus = async (req, res) => {
     try {
@@ -83,3 +80,6 @@ const getTodayStatus = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// 👇 YAHAN PAR getTodayStatus ADD KIYA HAI TAAKI CRASH NA HO
+module.exports = { checkIn, checkOut, getTodayStatus };
