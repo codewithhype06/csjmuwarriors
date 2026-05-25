@@ -5,7 +5,7 @@ const payrollController = require('../controllers/payrollController');
 const { protect } = require('../middlewares/authMiddleware');
 const { adminOnly } = require('../middlewares/adminMiddleware');
 
-// Admin generates the payroll
+// Admin generates the payroll for ALL staff with one click
 router.post('/generate', protect, adminOnly, payrollController.createPayslip);
 
 // Staff fetches their payroll
