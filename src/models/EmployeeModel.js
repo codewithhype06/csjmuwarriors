@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const employeeSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    phone: { type: String, required: true }, // Added Phone Number
+    phone: { type: String, required: true }, 
     bvgId: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { 
@@ -11,15 +11,20 @@ const employeeSchema = new mongoose.Schema({
         enum: ['ADMIN', 'MANAGER', 'SUPERVISOR', 'STAFF'], 
         default: 'STAFF' 
     },
-    // Add this inside src/models/EmployeeModel.js
     baseSalary: { 
         type: Number, 
-        default: 15000 // Default automated salary, can be changed when hiring
+        default: 15000 
     },
-    // SECURITY GATE: Every new user defaults to false until an Admin approves them
-    isApproved: { type: Boolean, default: false }, // 👇 YAHAN COMMA (,) ADD KAR DIYA HAI
-    
-    fcmToken: { type: String, default: "" }
+    isApproved: { type: Boolean, default: false }, 
+    fcmToken: { type: String, default: "" },
+
+    // 👇 --- NEW: KYC & PERSONAL DETAILS FIELDS --- 👇
+    aadhaar: { type: String, default: "Not Updated" },
+    pan: { type: String, default: "Not Updated" },
+    bloodGroup: { type: String, default: "Not Updated" },
+    zone: { type: String, default: "Not Assigned" },
+    shift: { type: String, default: "Not Assigned" }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Employee', employeeSchema);

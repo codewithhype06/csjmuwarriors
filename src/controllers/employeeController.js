@@ -38,26 +38,45 @@ const getProfile = async (req, res) => {
     }
 };
 
-// --- NEW: Fetch all pending approvals ---
+// 👇 --- NEW: UPDATE PROFILE DETAILS --- 👇
+const updateProfile = async (req, res) => {
+    try {
+        // App se aane wala naya data
+        const { phone, aadhaar, pan, bloodGroup } = req.body;
+
+        // User ki id token se milegi (req.user.id), usko update kardo
+        const updatedEmployee = await employeeService.Employee.findByIdAndUpdate(
+            req.user.id,
+            { phone, aadhaar, pan, bloodGroup },
+            { new: true, runValidators: true } // new: true ensures we get the updated document back
+        ).select('-password');
+
+        if (!updatedEmployee) {
+            return sendResponse(res, 404, false, "Employee not found");
+        }
+
+        sendResponse(res, 200, true, "Profile updated successfully", updatedEmployee);
+    } catch (error) {
+        sendResponse(res, 500, false, error.message);
+    }
+};
+
 const getPendingApprovals = async (req, res) => {
     try {
-        // Fetch users where isApproved is strictly false
         const pendingUsers = await employeeService.Employee.find({ isApproved: false }).select('-password');
-        
         sendResponse(res, 200, true, "Pending approvals fetched successfully", pendingUsers);
     } catch (error) {
         sendResponse(res, 500, false, error.message);
     }
 };
 
-// --- NEW: Approve an employee ---
 const approveEmployee = async (req, res) => {
     try {
         const employeeId = req.params.id;
         const employee = await employeeService.Employee.findByIdAndUpdate(
             employeeId,
             { isApproved: true },
-            { new: true } // Returns the updated document
+            { new: true } 
         ).select('-password');
 
         if (!employee) {
@@ -74,6 +93,7 @@ module.exports = {
     registerEmployee, 
     loginEmployee, 
     getProfile, 
+    updateProfile, // 👇 EXPORT KIYA YAHAN
     getPendingApprovals, 
     approveEmployee 
 };
