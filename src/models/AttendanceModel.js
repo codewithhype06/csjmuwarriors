@@ -9,7 +9,7 @@ const attendanceSchema = new mongoose.Schema({
     },
     date: { 
         type: String, 
-        required: true // Format: YYYY-MM-DD for easy querying
+        required: true 
     },
     checkInTime: { 
         type: Date, 
@@ -23,7 +23,17 @@ const attendanceSchema = new mongoose.Schema({
         longitude: { type: String }
     },
     selfieImage: { 
-        type: String // Stores the Base64 string from Android
+        type: String 
+    },
+    // ✨ NEW: OVERTIME TRACKING FIELDS ✨
+    overtimeReason: { 
+        type: String,
+        default: null
+    },
+    overtimeStatus: {
+        type: String,
+        enum: ['NONE', 'PENDING', 'APPROVED', 'REJECTED'],
+        default: 'NONE'
     }
 }, { timestamps: true });
 
