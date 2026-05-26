@@ -7,7 +7,7 @@ const leaveSchema = new mongoose.Schema({
         ref: 'Employee', 
         required: true 
     },
-    leaveType: { // NEW: Added to match Android UI
+    leaveType: { 
         type: String,
         required: true
     },
