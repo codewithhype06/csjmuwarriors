@@ -1,7 +1,7 @@
 // File: src/controllers/attendanceController.js
 const attendanceService = require('../services/attendanceService');
 const Attendance = require('../models/AttendanceModel');
-// 👇 ADDED: Employee model to fetch name before check-in
+// 👇 Make sure the file name matches exactly what is on GitHub (case-sensitive!)
 const Employee = require('../models/EmployeeModel'); 
 
 const checkIn = async (req, res) => {
