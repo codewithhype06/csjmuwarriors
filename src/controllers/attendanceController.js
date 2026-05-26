@@ -1,5 +1,8 @@
+// File: src/controllers/attendanceController.js
 const attendanceService = require('../services/attendanceService');
 const Attendance = require('../models/AttendanceModel');
+// 👇 ADDED: Employee model to fetch name before check-in
+const Employee = require('../models/EmployeeModel'); 
 
 const checkIn = async (req, res) => {
     try {
@@ -41,7 +44,19 @@ const getTodayStatus = async (req, res) => {
                                          .populate('employee', 'name bvgId');
         
         if (!attendance) {
-            return res.status(200).json({ success: true, data: { status: 'NOT_CHECKED_IN' } });
+            // 👇 THE FIX: Fetching employee details even if not checked in yet
+            const emp = await Employee.findById(req.user.id);
+            const empName = emp ? emp.name : "Warrior";
+            const empBvgId = emp ? emp.bvgId : "STAFF";
+
+            return res.status(200).json({ 
+                success: true, 
+                data: { 
+                    status: 'NOT_CHECKED_IN',
+                    name: empName,
+                    bvgId: empBvgId
+                } 
+            });
         }
 
         const empName = attendance.employee?.name || "Warrior";
