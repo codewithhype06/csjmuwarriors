@@ -10,8 +10,8 @@ const attendanceRoutes = require('./routes/attendanceRoutes');
 const leaveRoutes = require('./routes/leaveRoutes'); 
 const adminRoutes = require('./routes/adminRoutes'); 
 const payrollRoutes = require('./routes/payrollRoutes');
-const complaintRoutes = require('./routes/complaintRoutes'); // <-- Added Complaint Routes
-const zoneRoutes = require('./src/routes/zoneRoutes');
+const complaintRoutes = require('./routes/complaintRoutes'); 
+const zoneRoutes = require('./routes/zoneRoutes'); // ✨ NAYA: Added Zone Routes
 
 connectDB();
 
@@ -28,9 +28,11 @@ app.use('/api/v1/attendance', attendanceRoutes);
 app.use('/api/v1/leaves', leaveRoutes); 
 app.use('/api/v1/admin', adminRoutes); 
 app.use('/api/v1/payroll', payrollRoutes); 
-app.use('/api/v1/complaints', complaintRoutes); // <-- Added Complaint URL
+app.use('/api/v1/complaints', complaintRoutes); 
 app.use('/api/v1/notifications', require('./routes/notificationRoutes'));
-app.use('/api/admin/zones', zoneRoutes);
+
+// ✨ NAYA: Zone API URL Mount (Matches Android App Retrofit /api/v1/admin/zones)
+app.use('/api/v1/admin/zones', zoneRoutes); 
 
 // Test Route
 app.get('/', (req, res) => {
