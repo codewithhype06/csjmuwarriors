@@ -1,4 +1,4 @@
-const Zone = require('../models/Zone');
+const Zone = require('../models/ZoneModel');
 const Employee = require('../models/EmployeeModel'); // Ensure path is correct according to your structure
 
 // 1. Create a New Zone with Subzones from Mobile App
